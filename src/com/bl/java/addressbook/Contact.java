@@ -1,6 +1,6 @@
 package com.bl.java.addressbook;
 
-public class AddressBook {
+public class Contact {
 
     String firstName;
     String lastName;
@@ -11,7 +11,7 @@ public class AddressBook {
     String phoneNumber;
     String email;
 
-    public AddressBook(String firstName, String lastName, String address, String city, String state, String zip, String phoneNumber, String email)
+    public Contact(String firstName, String lastName, String address, String city, String state, String zip, String phoneNumber, String email)
     {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -23,9 +23,8 @@ public class AddressBook {
         this.email = email;
     }
 
-    public static void main(String[] args)
+    public String getInfo()
     {
-        System.out.println("--- Welcome to Address Book ---");
-
+        return "First name is"+firstName+"Last Name is"+lastName+"Address is "+address+"City is"+city+"State is"+state+"Zip is "+zip+"Phone number is"+phoneNumber+"Email is "+email;
     }
 }

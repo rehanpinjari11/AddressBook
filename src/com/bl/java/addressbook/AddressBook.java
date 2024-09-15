@@ -10,9 +10,11 @@ public class AddressBook {
         contacts = new HashMap<>();
     }
 
-    public void addContact(String firstName, String lastName, String address, String city, String state, String zip, String phoneNumber, String email) {
-        Contact contact = new Contact(firstName, lastName, address, city, state, zip, phoneNumber, email);
-        contacts.put(firstName, contact);
+    public boolean addContact(Contact contact) {
+        String fullName = contact.firstName + " " + contact.lastName;
+        contacts.put(fullName, contact);
+        return true;
+
     }
 
     public Contact getContact(String name) {
@@ -29,9 +31,8 @@ public class AddressBook {
         }
     }
 
-    public static void main(String[] args) {
+    public static void addressBookMenu(AddressBook addressBook) {
         Scanner scanner = new Scanner(System.in);
-        AddressBook addressBook = new AddressBook();
         boolean exit = false;
 
         while (!exit) {
@@ -64,21 +65,22 @@ public class AddressBook {
                     String phoneNumber = scanner.nextLine();
                     System.out.print("Enter email: ");
                     String email = scanner.nextLine();
-                    addressBook.addContact(firstName, lastName, address, city, state, zip, phoneNumber, email);
+                    Contact contact = new Contact(firstName, lastName, address, city, state, zip, phoneNumber, email);
+                    addressBook.addContact(contact);
                     System.out.println("Contact added.");
                     break;
                 case 2:
-                    System.out.print("Enter first name to retrieve: ");
+                    System.out.print("Enter full name to retrieve: ");
                     String nameToRetrieve = scanner.nextLine();
-                    Contact contact = addressBook.getContact(nameToRetrieve);
-                    if (contact != null) {
-                        System.out.println("Contact found: " + contact);
+                    Contact contactToRetrieve = addressBook.getContact(nameToRetrieve);
+                    if (contactToRetrieve != null) {
+                        System.out.println("Contact found: " + contactToRetrieve);
                     } else {
                         System.out.println("Contact not found.");
                     }
                     break;
                 case 3:
-                    System.out.print("Enter first name to remove: ");
+                    System.out.print("Enter full name to remove: ");
                     String nameToRemove = scanner.nextLine();
                     addressBook.removeContact(nameToRemove);
                     System.out.println("Contact removed if it existed.");
@@ -96,6 +98,10 @@ public class AddressBook {
         }
 
         scanner.close();
+    }
+
+    public static void main(String[] args) {
+
     }
 
 }

@@ -1,41 +1,56 @@
 package com.bl.java.addressbook;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+
 import java.util.*;
 
 public class AddressBook {
 
-    private HashMap<String, Contact> contacts;
+    private List<Contact> contacts;
 
     public AddressBook() {
-        contacts = new HashMap<>();
+        contacts = new ArrayList<>();
     }
 
     public boolean addContact(Contact contact) {
-        String fullName = contact.firstName + " " + contact.lastName;
-        contacts.put(fullName, contact);
-        return true;
-
+        if (isDuplicate(contact)) {
+            System.out.println("Duplicate entry found for: " + contact.firstName + " " + contact.lastName);
+            return false;
+        } else {
+            contacts.add(contact);
+            System.out.println("Contact added: " + contact.firstName + " " + contact.lastName);
+            return true;
+        }
     }
 
-    public Contact getContact(String name) {
-        return contacts.get(name);
+    public boolean isDuplicate(Contact contact) {
+        return contacts.stream()
+                .anyMatch(existingContact -> existingContact.equals(contact));
     }
 
-    public void removeContact(String name) {
-        contacts.remove(name);
+    public Contact getContact(String firstName, String lastName) {
+        return contacts.stream()
+                .filter(contact -> contact.firstName.equals(firstName) && contact.lastName.equals(lastName))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public void removeContact(String firstName, String lastName) {
+        contacts.removeIf(contact -> contact.firstName.equals(firstName) && contact.lastName.equals(lastName));
     }
 
     public void listContacts() {
-        for (Map.Entry<String, Contact> entry : contacts.entrySet()) {
-            System.out.println(entry.getValue());
-        }
+        contacts.forEach(System.out::println);
     }
 
     public static void addressBookMenu(AddressBook addressBook) {
         Scanner scanner = new Scanner(System.in);
-        boolean exit = false;
+        boolean exit_break = true;
 
-        while (!exit) {
+        while (exit_break) {
             System.out.println("\nAddress Book Menu:");
             System.out.println("1. Add Contact");
             System.out.println("2. Retrieve Contact");
@@ -67,12 +82,13 @@ public class AddressBook {
                     String email = scanner.nextLine();
                     Contact contact = new Contact(firstName, lastName, address, city, state, zip, phoneNumber, email);
                     addressBook.addContact(contact);
-                    System.out.println("Contact added.");
                     break;
                 case 2:
-                    System.out.print("Enter full name to retrieve: ");
-                    String nameToRetrieve = scanner.nextLine();
-                    Contact contactToRetrieve = addressBook.getContact(nameToRetrieve);
+                    System.out.print("Enter first name to retrieve: ");
+                    String firstNameToRetrieve = scanner.nextLine();
+                    System.out.print("Enter last name to retrieve: ");
+                    String lastNameToRetrieve = scanner.nextLine();
+                    Contact contactToRetrieve = addressBook.getContact(firstNameToRetrieve, lastNameToRetrieve);
                     if (contactToRetrieve != null) {
                         System.out.println("Contact found: " + contactToRetrieve);
                     } else {
@@ -80,9 +96,11 @@ public class AddressBook {
                     }
                     break;
                 case 3:
-                    System.out.print("Enter full name to remove: ");
-                    String nameToRemove = scanner.nextLine();
-                    addressBook.removeContact(nameToRemove);
+                    System.out.print("Enter first name to remove: ");
+                    String firstNameToRemove = scanner.nextLine();
+                    System.out.print("Enter last name to remove: ");
+                    String lastNameToRemove = scanner.nextLine();
+                    addressBook.removeContact(firstNameToRemove, lastNameToRemove);
                     System.out.println("Contact removed if it existed.");
                     break;
                 case 4:
@@ -90,18 +108,16 @@ public class AddressBook {
                     addressBook.listContacts();
                     break;
                 case 5:
-                    exit = true;
-                    break;
+                    exit_break = false;
+
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
         }
 
-        scanner.close();
     }
 
     public static void main(String[] args) {
-
     }
 
 }

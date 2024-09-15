@@ -9,20 +9,18 @@ import java.util.*;
 
 public class AddressBook {
 
-    private List<Contact> contacts;
+    private final List<Contact> contacts;
 
     public AddressBook() {
         contacts = new ArrayList<>();
     }
 
-    public boolean addContact(Contact contact) {
+    public void addContact(Contact contact) {
         if (isDuplicate(contact)) {
             System.out.println("Duplicate entry found for: " + contact.firstName + " " + contact.lastName);
-            return false;
         } else {
             contacts.add(contact);
             System.out.println("Contact added: " + contact.firstName + " " + contact.lastName);
-            return true;
         }
     }
 
@@ -46,11 +44,23 @@ public class AddressBook {
         contacts.forEach(System.out::println);
     }
 
+    public List<Contact> searchByCity(String city) {
+        return contacts.stream()
+                .filter(contact -> contact.city.equalsIgnoreCase(city))
+                .collect(Collectors.toList());
+    }
+
+    public List<Contact> searchByState(String state) {
+        return contacts.stream()
+                .filter(contact -> contact.state.equalsIgnoreCase(state))
+                .collect(Collectors.toList());
+    }
+
     public static void addressBookMenu(AddressBook addressBook) {
         Scanner scanner = new Scanner(System.in);
-        boolean exit_break = true;
+        boolean exit = false;
 
-        while (exit_break) {
+        while (!exit) {
             System.out.println("\nAddress Book Menu:");
             System.out.println("1. Add Contact");
             System.out.println("2. Retrieve Contact");
@@ -108,8 +118,8 @@ public class AddressBook {
                     addressBook.listContacts();
                     break;
                 case 5:
-                    exit_break = false;
-
+                    exit = true;
+                    break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
